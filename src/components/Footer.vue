@@ -33,40 +33,536 @@
   </footer>
 </template>
 
-<script setup>
-
-</script>
-
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Jeju+Myeongjo&display=swap');
-.site-footer{margin-top:auto;width:100%;background-color:#222222;height:auto;color:#fff}
-.footer-inner{display:flex;align-items:center;justify-content:space-between;padding:60px 150px;box-sizing:border-box}
 
-.footer-left{display:flex;flex-direction:column;gap:18px}
-.footer-logo-link{text-decoration:none;cursor:pointer;transition:opacity .18s ease}
-.footer-logo-link:hover{opacity:0.8}
-.footer-logo-wrap{display:flex;align-items:center;gap:18px}
-.footer-logo-text{font-family:'Jeju Myeongjo', serif;font-size:96px;color:#FFFFFF;line-height:1}
-.footer-logo-icon{width:77px;height:70px;margin-top:20px}
-
-.footer-sub{font-family:'Jeju Myeongjo', serif;font-size:20px;color:#DADADA}
-.footer-right{display:flex;flex-direction:column;align-items:center;gap:8px}
-.footer-title{font-family:'Jeju Myeongjo', serif;font-size:36px}
-.footer-icons{display:flex;gap:16px;align-items:center}
-.social-link{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;transition:color .18s ease}
-.social-svg{width:28px;height:28px;flex:0 0 28px}
-.social-label{font-family:'Jeju Myeongjo', serif;font-size:18px;color:inherit}
-.social-link:hover{color:#A53DFF}
-
-@media(max-width:1060px){
- .footer-logo-text{white-space: nowrap}
- .footer-inner{padding:30px 40px;flex-direction:column;align-items:flex-start;gap:24px}
-  .footer-right{align-items:flex-start}
+.site-footer {
+  margin-top: auto;
+  width: 100%;
+  background-color: #222222;
+  height: auto;
+  color: #fff;
+  transition: all 0.3s ease;
 }
 
-@media (max-width:536px){
-  .footer-inner{padding:20px 20px}
-  .footer-logo-text{font-size:64px}
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 60px 150px;
+  box-sizing: border-box;
+  max-width: 1920px;
+  margin: 0 auto;
+  transition: all 0.3s ease;
 }
 
+.footer-left {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  transition: all 0.3s ease;
+}
+
+.footer-logo-link {
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.18s ease;
+}
+
+.footer-logo-link:hover {
+  opacity: 0.8;
+}
+
+.footer-logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  transition: all 0.3s ease;
+}
+
+.footer-logo-text {
+  font-family: 'Jeju Myeongjo', serif;
+  font-size: 96px;
+  color: #FFFFFF;
+  line-height: 1;
+  transition: font-size 0.3s ease;
+}
+
+.footer-logo-icon {
+  width: 77px;
+  height: 70px;
+  margin-top: 20px;
+  transition: all 0.3s ease;
+}
+
+.footer-sub {
+  font-family: 'Jeju Myeongjo', serif;
+  font-size: 20px;
+  color: #DADADA;
+  transition: font-size 0.3s ease;
+}
+
+.footer-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.footer-title {
+  font-family: 'Jeju Myeongjo', serif;
+  font-size: 36px;
+  transition: font-size 0.3s ease;
+}
+
+.footer-icons {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.18s ease;
+}
+
+.social-svg {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  transition: all 0.3s ease;
+}
+
+.social-label {
+  font-family: 'Jeju Myeongjo', serif;
+  font-size: 18px;
+  color: inherit;
+  transition: font-size 0.3s ease;
+}
+
+.social-link:hover {
+  color: #A53DFF;
+}
+
+@media (max-width: 1600px) {
+  .footer-inner {
+    padding: 50px 120px;
+  }
+  
+  .footer-logo-text {
+    font-size: 86px;
+  }
+  
+  .footer-logo-icon {
+    width: 70px;
+    height: 64px;
+    margin-top: 18px;
+  }
+  
+  .footer-title {
+    font-size: 32px;
+  }
+  
+  .social-label {
+    font-size: 17px;
+  }
+}
+
+@media (max-width: 1400px) {
+  .footer-inner {
+    padding: 45px 100px;
+  }
+  
+  .footer-logo-text {
+    font-size: 78px;
+  }
+  
+  .footer-logo-icon {
+    width: 65px;
+    height: 59px;
+    margin-top: 16px;
+  }
+  
+  .footer-sub {
+    font-size: 19px;
+  }
+  
+  .footer-title {
+    font-size: 30px;
+  }
+  
+  .social-svg {
+    width: 26px;
+    height: 26px;
+  }
+  
+  .social-label {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .footer-inner {
+    padding: 40px 80px;
+  }
+  
+  .footer-logo-text {
+    font-size: 72px;
+  }
+  
+  .footer-logo-icon {
+    width: 60px;
+    height: 55px;
+    margin-top: 15px;
+  }
+  
+  .footer-sub {
+    font-size: 18px;
+  }
+  
+  .footer-title {
+    font-size: 28px;
+  }
+  
+  .social-svg {
+    width: 25px;
+    height: 25px;
+  }
+  
+  .social-label {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .footer-inner {
+    padding: 35px 60px;
+  }
+  
+  .footer-logo-text {
+    font-size: 66px;
+  }
+  
+  .footer-logo-icon {
+    width: 55px;
+    height: 50px;
+    margin-top: 14px;
+  }
+  
+  .footer-sub {
+    font-size: 17px;
+  }
+  
+  .footer-title {
+    font-size: 26px;
+  }
+  
+  .social-svg {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .social-label {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 1000px) {
+  .footer-inner {
+    padding: 35px 50px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 30px;
+  }
+  
+  .footer-logo-text {
+    font-size: 64px;
+  }
+  
+  .footer-logo-icon {
+    width: 54px;
+    height: 49px;
+    margin-top: 13px;
+  }
+  
+  .footer-sub {
+    font-size: 17px;
+  }
+  
+  .footer-right {
+    align-items: flex-start;
+    width: 100%;
+  }
+  
+  .footer-title {
+    font-size: 26px;
+  }
+  
+  .footer-icons {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 850px) {
+  .footer-inner {
+    padding: 30px 40px;
+    gap: 25px;
+  }
+  
+  .footer-logo-text {
+    font-size: 60px;
+  }
+  
+  .footer-logo-icon {
+    width: 50px;
+    height: 46px;
+    margin-top: 12px;
+  }
+  
+  .footer-sub {
+    font-size: 16px;
+  }
+  
+  .footer-title {
+    font-size: 24px;
+  }
+  
+  .footer-icons {
+    gap: 18px;
+  }
+  
+  .social-svg {
+    width: 23px;
+    height: 23px;
+  }
+  
+  .social-label {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer-inner {
+    padding: 25px 35px;
+    gap: 22px;
+  }
+  
+  .footer-logo-text {
+    font-size: 56px;
+  }
+  
+  .footer-logo-icon {
+    width: 46px;
+    height: 42px;
+    margin-top: 11px;
+  }
+  
+  .footer-sub {
+    font-size: 15px;
+  }
+  
+  .footer-title {
+    font-size: 22px;
+  }
+  
+  .footer-icons {
+    gap: 16px;
+  }
+  
+  .social-svg {
+    width: 22px;
+    height: 22px;
+  }
+  
+  .social-label {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 600px) {
+  .footer-inner {
+    padding: 22px 25px;
+    gap: 20px;
+  }
+  
+  .footer-logo-text {
+    font-size: 48px;
+  }
+  
+  .footer-logo-icon {
+    width: 40px;
+    height: 36px;
+    margin-top: 10px;
+  }
+  
+  .footer-sub {
+    font-size: 14px;
+  }
+  
+  .footer-title {
+    font-size: 20px;
+  }
+  
+  .footer-left {
+    gap: 12px;
+  }
+  
+  .footer-logo-wrap {
+    gap: 12px;
+  }
+  
+  .footer-icons {
+    gap: 14px;
+  }
+  
+  .social-link {
+    gap: 8px;
+  }
+  
+  .social-svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .social-label {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-inner {
+    padding: 18px 20px;
+    gap: 18px;
+  }
+  
+  .footer-logo-text {
+    font-size: 42px;
+  }
+  
+  .footer-logo-icon {
+    width: 36px;
+    height: 33px;
+    margin-top: 9px;
+  }
+  
+  .footer-sub {
+    font-size: 13px;
+  }
+  
+  .footer-title {
+    font-size: 18px;
+  }
+  
+  .footer-left {
+    gap: 10px;
+  }
+  
+  .footer-logo-wrap {
+    gap: 10px;
+  }
+  
+  .footer-icons {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .social-link {
+    gap: 8px;
+  }
+  
+  .social-svg {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .social-label {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 360px) {
+  .footer-inner {
+    padding: 15px 16px;
+    gap: 15px;
+  }
+  
+  .footer-logo-text {
+    font-size: 36px;
+  }
+  
+  .footer-logo-icon {
+    width: 32px;
+    height: 29px;
+    margin-top: 8px;
+  }
+  
+  .footer-sub {
+    font-size: 12px;
+  }
+  
+  .footer-title {
+    font-size: 16px;
+  }
+  
+  .footer-left {
+    gap: 8px;
+  }
+  
+  .footer-logo-wrap {
+    gap: 8px;
+  }
+  
+  .footer-icons {
+    gap: 10px;
+  }
+  
+  .social-svg {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .social-label {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 320px) {
+  .footer-inner {
+    padding: 12px 14px;
+  }
+  
+  .footer-logo-text {
+    font-size: 32px;
+  }
+  
+  .footer-logo-icon {
+    width: 28px;
+    height: 26px;
+    margin-top: 7px;
+  }
+  
+  .footer-sub {
+    font-size: 11px;
+  }
+  
+  .footer-title {
+    font-size: 15px;
+  }
+  
+  .social-svg {
+    width: 15px;
+    height: 15px;
+  }
+  
+  .social-label {
+    font-size: 10px;
+  }
+}
 </style>
