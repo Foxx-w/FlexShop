@@ -28,12 +28,12 @@
           </svg>
           <span class="action-label">Корзина</span>
         </button>
-        <button class="action-btn user-btn">
+        <a href="/register" class="action-btn user-btn">
           <svg class="icon user-icon" viewBox="107 56 26 28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <path d="M120 70C121.97 70 123.86 69.2625 125.253 67.9497C126.646 66.637 127.429 64.8565 127.429 63C127.429 61.1435 126.646 59.363 125.253 58.0503C123.86 56.7375 121.97 56 120 56C118.03 56 116.14 56.7375 114.747 58.0503C113.354 59.363 112.571 61.1435 112.571 63C112.571 64.8565 113.354 66.637 114.747 67.9497C116.14 69.2625 118.03 70 120 70ZM117.348 72.625C111.631 72.625 107 76.9891 107 82.3758C107 83.2727 107.772 84 108.724 84H131.276C132.228 84 133 83.2727 133 82.3758C133 76.9891 128.369 72.625 122.652 72.625H117.348Z" fill="currentColor"/>
           </svg>
           <span class="action-label">Войти</span>
-        </button>
+        </a>
       </div>
     </div>
   </header>
@@ -57,7 +57,7 @@
 .search-inline{width:20px;height:20px;opacity:0.8}
 .search-input{flex:1;border:0;outline:none;font-size:16px;background:transparent}
 .header-right{display:flex;align-items:center;gap:40px}
-.action-btn{background:transparent;border:none;color:#fff;display:flex;flex-direction:column;align-items:center;cursor:pointer;font-family:'Montserrat Alternates', sans-serif}
+.action-btn{background:transparent;border:none;color:#fff;display:flex;flex-direction:column;align-items:center;cursor:pointer;font-family:'Montserrat Alternates', sans-serif;text-decoration:none}
 .action-label{font-size:14px;margin-top:6px;color:inherit;transition:color .18s ease}
 .icon{display:block;fill:currentColor}
 .genres-icon{width:35px;height:35px}

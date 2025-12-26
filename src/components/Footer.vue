@@ -2,10 +2,12 @@
   <footer class="site-footer" role="contentinfo" aria-label="Футер">
     <div class="footer-inner">
       <div class="footer-left">
-        <div class="footer-logo-wrap">
-          <div class="footer-logo-text">Flex-Shop</div>
-          <img src="/src/assets/icons/logo.svg" alt="logo" class="footer-logo-icon" />
-        </div>
+        <a href="/" class="footer-logo-link">
+          <div class="footer-logo-wrap">
+            <div class="footer-logo-text">Flex-Shop</div>
+            <img src="/src/assets/icons/logo.svg" alt="logo" class="footer-logo-icon" />
+          </div>
+        </a>
         <div class="footer-sub">© Flex-Shop 2025. Все права защищены.</div>
       </div>
 
@@ -37,14 +39,16 @@
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Jeju+Myeongjo&display=swap');
-.site-footer{margin-top:1045px;width:100%;background-color:#222222;height:300px;color:#fff}
-.footer-inner{margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:40px 150px;box-sizing:border-box}
+.site-footer{margin-top:1045px;width:100%;background-color:#222222;height:100%;color:#fff}
+.footer-inner{display:flex;align-items:center;justify-content:space-between;padding:60px 150px;box-sizing:border-box}
 .footer-left{display:flex;flex-direction:column;gap:18px}
+.footer-logo-link{text-decoration:none;cursor:pointer;transition:opacity .18s ease}
+.footer-logo-link:hover{opacity:0.8}
 .footer-logo-wrap{display:flex;align-items:center;gap:18px}
 .footer-logo-text{font-family:'Jeju Myeongjo', serif;font-size:96px;color:#FFFFFF;line-height:1}
 .footer-logo-icon{width:77px;height:70px;margin-top:20px}
 .footer-sub{font-family:'Jeju Myeongjo', serif;font-size:20px;color:#DADADA}
-.footer-right{display:flex;flex-direction:column;align-items:flex-end;gap:12px}
+.footer-right{display:flex;flex-direction:column;align-items:center;gap:8px}
 .footer-title{font-family:'Jeju Myeongjo', serif;font-size:36px}
 .footer-icons{display:flex;gap:16px;align-items:center}
 .social-link{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;transition:color .18s ease}
