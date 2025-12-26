@@ -43,7 +43,7 @@ import Footer from '../components/Footer.vue'
 .reg-sub{margin:0;color:#333}
 .reg-field{display:block}
 .reg-field input{width:100%;border:0;border-bottom:1px solid #cfcfcf;padding:12px 6px;font-size:16px;background:transparent;outline:none}
-.reg-submit{margin-top:8px;background:#222;color:#fff;border:0;border-radius:8px;padding:12px 18px;font-size:16px;cursor:pointer}
+.reg-submit{margin-top:8px;background:#222;color:#fff;border:0;border-radius:30px;padding:12px 18px;font-size:16px;cursor:pointer}
 .reg-footer{margin-top:12px;color:#666}
 .reg-footer a{color:#222;text-decoration:none;margin-left:6px}
 

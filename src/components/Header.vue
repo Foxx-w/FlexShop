@@ -28,35 +28,44 @@
           </svg>
           <span class="action-label">Корзина</span>
         </router-link>
-        <a href="/register" class="action-btn user-btn">
+        <button type="button" class="action-btn user-btn" @click="toggleGuestMenu()">
           <svg class="icon user-icon" viewBox="107 56 26 28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <path d="M120 70C121.97 70 123.86 69.2625 125.253 67.9497C126.646 66.637 127.429 64.8565 127.429 63C127.429 61.1435 126.646 59.363 125.253 58.0503C123.86 56.7375 121.97 56 120 56C118.03 56 116.14 56.7375 114.747 58.0503C113.354 59.363 112.571 61.1435 112.571 63C112.571 64.8565 113.354 66.637 114.747 67.9497C116.14 69.2625 118.03 70 120 70ZM117.348 72.625C111.631 72.625 107 76.9891 107 82.3758C107 83.2727 107.772 84 108.724 84H131.276C132.228 84 133 83.2727 133 82.3758C133 76.9891 128.369 72.625 122.652 72.625H117.348Z" fill="currentColor"/>
           </svg>
           <span class="action-label">Войти</span>
-        </a>
+        </button>
       </div>
     </div>
   </header>
 </template>
 
 <script setup>
-
+import { showGuestMenu, showUserMenu } from '../stores/ui'
+function toggleGuestMenu(){
+  showGuestMenu.value = !showGuestMenu.value
+}
+function toggleUserMenu(){
+  showUserMenu.value = !showUserMenu.value
+}
 </script>
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600&display=swap');
-.site-header{width:100%;display:flex;justify-content:center}
-.header-inner{white-space: nowrap;max-width:1920px;width:100%;height:164px;background:#222222;display:flex;align-items:center;justify-content:space-between;padding:0 150px;box-sizing:border-box;color:#fff;margin:0 auto}
+.site-header{width:100%;display:flex;justify-content:center;background:#222222;z-index:1000}
+.header-inner{white-space: nowrap;max-width:1920px;width:100%;height:164px;display:flex;align-items:center;justify-content:space-between;padding:0 150px;box-sizing:border-box;color:#fff;margin:0 auto;background:transparent}
+
 .header-left{display:flex;align-items:center}
 .logo-wrap{display:flex;align-items:center;gap:8px;cursor:pointer;transition:opacity .18s ease;text-decoration:none;color:inherit}
 .logo-text{font-family: 'Jersey 10', Georgia, serif;font-size:64px;color:inherit;line-height:1}
 .logo-icon{width:45px;height:40px;margin-top:10px}
 .logo-wrap:hover{opacity:0.8}
+
 .header-center{position:relative;display:flex;align-items:center;padding-right: 60px;}
-.genres-btn{width:45px;height:45px;border-radius:8px;background:transparent;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
-.search-wrap{width:420px;height:25px;background:#FFFFFF;border-radius:10px;display:flex;align-items:center;gap:12px;padding:10px 16px;box-shadow:0 4px 12px rgba(2,6,23,0.12);margin:0 24px}
+.genres-btn{width:45px;height:45px;border-radius:30px;background:transparent;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.search-wrap{width:420px;height:25px;background:#FFFFFF;border-radius:30px;display:flex;align-items:center;gap:12px;padding:10px 16px;box-shadow:0 4px 12px rgba(2,6,23,0.12);margin:0 24px}
 .search-inline{width:20px;height:20px;opacity:0.8}
 .search-input{flex:1;border:0;outline:none;font-size:16px;background:transparent}
+
 .header-right{display:flex;align-items:center;gap:40px}
 .action-btn{background:transparent;border:none;color:#fff;display:flex;flex-direction:column;align-items:center;cursor:pointer;font-family:'Montserrat Alternates', sans-serif;text-decoration:none}
 .action-label{font-size:14px;margin-top:6px;color:inherit;transition:color .18s ease}

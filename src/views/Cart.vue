@@ -45,7 +45,6 @@ const allChecked = ref(false)
 </script>
 
 <style scoped>
-/* keep Montserrat only */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600&display=swap');
 .cart-root{min-height:100vh;display:flex;flex-direction:column;background:#F5F5F5}
 .cart-canvas{flex:1;display:flex;justify-content:center;min-height:calc(100vh - 164px);padding-bottom:40px}
@@ -57,12 +56,12 @@ const allChecked = ref(false)
 .cart-controls{display:flex;align-items:center;gap:16px;margin-top:24px;padding-bottom:16px;border-bottom:1px solid #E0E0E0}
 .cart-select-all{font-size:20px;font-family:'Montserrat Alternates', sans-serif}
 .cart-body{margin-top:24px}
-
 .cart-sidebar{width:340px;display:flex;align-items:flex-start;justify-content:center}
-.summary-box{width:340px;height:275px;border:5px solid #A53DFF;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:transparent;box-sizing:border-box;padding:18px;font-family:'Montserrat Alternates', sans-serif}
+
+.summary-box{width:340px;height:275px;border:5px solid #A53DFF;border-radius:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:transparent;box-sizing:border-box;padding:18px;font-family:'Montserrat Alternates', sans-serif}
 .summary-title{font-size:32px;font-weight:600}
 .summary-price{font-size:28px;color:#A53DFF;font-weight:600}
-.order-btn{background:#A53DFF;color:#fff;border:0;border-radius:24px;padding:12px 24px;font-size:18px;cursor:pointer;font-family:'Montserrat Alternates', sans-serif}
+.order-btn{background:#A53DFF;color:#fff;border:0;border-radius:30px;padding:12px 24px;font-size:18px;cursor:pointer;font-family:'Montserrat Alternates', sans-serif}
 .cart-count{font-size:20px;color:#676767;display:flex;align-items:center;gap:8px}
 .cart-items-label{color:#676767;font-family:'Montserrat Alternates', sans-serif;font-size:20px}
 .cart-items-number{min-width:56px;display:inline-block}
@@ -85,7 +84,7 @@ const allChecked = ref(false)
 
 @media (max-width:768px){
   .cart-inner{flex-direction:column;gap:20px;align-items:stretch}
-  .cart-container{padding:20px 36px 20px;border-radius:20px;flex:1;min-height:0}
+  .cart-container{padding:20px 36px 20px;border-radius:30px;flex:1;min-height:0}
   .cart-canvas{min-height:auto}
 }
 

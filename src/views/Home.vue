@@ -64,12 +64,15 @@ body{font-family:Inter, system-ui, Arial, sans-serif;background:#F5F5F5}
 .home-canvas{max-width:1920px;width:100%;min-height:calc(100vh - 164px);background:#F5F5F5}
 
 .three-blocks{display:flex;justify-content:center;align-items:center;gap:110px;margin-top:36px;padding:0 64px;box-sizing:border-box}
+
 .left-block{width:370px;height:400px;background:#EFEFEF;border-radius:30px;padding:22px;box-sizing:border-box}
 .left-title{font-family:'Montserrat Alternates', sans-serif;font-size:36px;margin:0 0 12px;color:#111}
 .new-list{font-family:'Montserrat Alternates', sans-serif;font-size:18px;line-height:1.25;margin:0;padding-left:18px;color:#111;overflow-wrap:break-word;hyphens:auto}
 .new-list li{margin:6px 0}
+
 .center-block{width:780px;height:440px;border-radius:30px;overflow:hidden;align-self:center}
 .center-block img{width:100%;height:100%;object-fit:cover;display:block}
+
 .right-block{width:370px;height:400px;border-radius:30px;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;align-self:center}
 .right-block img{width:100%;height:100%;object-fit:cover;display:block}
 .promo-text{position:absolute;top:18px;left:50%;transform:translateX(-50%);z-index:2;font-family:'Montserrat Alternates', sans-serif;font-size:36px;color:#ffffff;text-align:center;pointer-events:none}
@@ -103,7 +106,7 @@ body{font-family:Inter, system-ui, Arial, sans-serif;background:#F5F5F5}
 @media (max-width:1200px){
   .three-blocks{gap:40px;padding:0 16px}
   .left-block,.right-block{display:none}
-  .center-block{width:90%;height:auto;border-radius:20px}
+  .center-block{width:90%;height:auto;border-radius:30px}
   .right-block{width:320px;height:340px}
 }
 

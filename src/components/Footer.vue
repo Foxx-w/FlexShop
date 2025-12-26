@@ -41,12 +41,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Jeju+Myeongjo&display=swap');
 .site-footer{margin-top:auto;width:100%;background-color:#222222;height:auto;color:#fff}
 .footer-inner{display:flex;align-items:center;justify-content:space-between;padding:60px 150px;box-sizing:border-box}
+
 .footer-left{display:flex;flex-direction:column;gap:18px}
 .footer-logo-link{text-decoration:none;cursor:pointer;transition:opacity .18s ease}
 .footer-logo-link:hover{opacity:0.8}
 .footer-logo-wrap{display:flex;align-items:center;gap:18px}
 .footer-logo-text{font-family:'Jeju Myeongjo', serif;font-size:96px;color:#FFFFFF;line-height:1}
 .footer-logo-icon{width:77px;height:70px;margin-top:20px}
+
 .footer-sub{font-family:'Jeju Myeongjo', serif;font-size:20px;color:#DADADA}
 .footer-right{display:flex;flex-direction:column;align-items:center;gap:8px}
 .footer-title{font-family:'Jeju Myeongjo', serif;font-size:36px}
