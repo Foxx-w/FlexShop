@@ -41,11 +41,11 @@ function close(){
 
 function positionMenu(){
   const menuHeight = 200
-  // responsive width: don't exceed viewport minus margins
+  // адаптивная ширина: не превышать ширину окна минус отступы
   const viewportPad = 40
   let menuWidth = 400
   if(window.innerWidth - viewportPad < menuWidth) menuWidth = Math.max(280, window.innerWidth - viewportPad)
-  // try to align under two specific buttons: cart and user
+  // адаптивная ширина: не превышать ширину окна минус отступы
   const cartBtn = document.querySelector('.site-header .header-inner .cart-btn')
   const userBtn = document.querySelector('.site-header .header-inner .user-btn')
   const headerEl = document.querySelector('.site-header')
@@ -58,16 +58,16 @@ function positionMenu(){
     let left = Math.round(center - menuWidth / 2)
     if(left + menuWidth > window.innerWidth) left = Math.round(window.innerWidth - menuWidth)
     if(left < 0) left = 0
-    // align to header bottom to avoid being covered
+    // выравниваем к нижней части хедера, чтобы не быть перекрытым
     const headerRect = headerEl.getBoundingClientRect()
-    // compute document-coordinate top so menu stays glued under header while scrolling
+    // вычисляем координату в документе, чтобы меню оставалось под хедером при скроллении
     const overlayTop = Math.max(Math.round(headerRect.bottom + window.scrollY), 0)
-    // place overlay directly under header (absolute in document coords)
+    // размещаем overlay прямо под хедером (абсолютно в координатах документа)
     overlayStyle.value = { position: 'absolute', left: 0, right: 0, top: overlayTop + 'px', pointerEvents: 'auto', zIndex: 1100 }
     menuStyle.value = { position: 'absolute', width: menuWidth + 'px', height: menuHeight + 'px', top: '0px', left: Math.round(left) + 'px', zIndex: 1101, willChange: 'transform' }
     return
   }
-  // fallback: use header-right or header-inner
+  // запасной вариант: используем header-right или header-inner
   const anchor = document.querySelector('.site-header .header-inner .header-right') || document.querySelector('.site-header .header-inner')
   if(!anchor){
     const left = Math.max((window.innerWidth - menuWidth)/2, 0)
@@ -91,9 +91,9 @@ watch(()=>props.visible, async (v)=>{
   if(v){
     await nextTick()
     positionMenu()
-    // ignore immediate clicks that may come from the same user action
+    // игнорируем клики, которые могли прийти из одного действия пользователя
     ignoreClicksUntil.value = Date.now() + 200
-    // reposition on resize only; disable scroll-based reposition to keep menu static
+    // переставляем только при изменении размера; отключаем переставление при скроллении
     window.addEventListener('resize', positionMenu)
   } else {
     window.removeEventListener('resize', positionMenu)
@@ -102,10 +102,7 @@ watch(()=>props.visible, async (v)=>{
   }
 })
 
-// scroll repositioning disabled to keep menu static while open
-
-// debugLog removed
-
+// переставление при скроллении отключено, чтобы меню оставалось статичным
 </script>
 
 <style scoped>
@@ -124,7 +121,6 @@ watch(()=>props.visible, async (v)=>{
   to{opacity:1;transform:translateY(0) scale(1)}
 }
 
-/* Respect user's reduced motion preference */
 @media (prefers-reduced-motion: reduce){
   .guest-menu{animation:none !important;transform:none !important}
   .menu-button{transition:none !important}

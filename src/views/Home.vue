@@ -66,8 +66,8 @@ body{font-family:Inter, system-ui, Arial, sans-serif;background:#F5F5F5}
 .three-blocks{display:flex;justify-content:center;align-items:center;gap:110px;margin-top:36px;padding:0 64px;box-sizing:border-box}
 
 .left-block{width:370px;height:400px;background:#EFEFEF;border-radius:30px;padding:22px;box-sizing:border-box}
-.left-title{font-family:'Montserrat Alternates', sans-serif;font-size:36px;margin:0 0 12px;color:#111}
-.new-list{font-family:'Montserrat Alternates', sans-serif;font-size:18px;line-height:1.25;margin:0;padding-left:18px;color:#111;overflow-wrap:break-word;hyphens:auto}
+.left-title{font-family:'Montserrat Alternates', sans-serif;font-size:36px;margin:0 0 12px;color:#111;padding-left: 8px;}
+.new-list{font-family:'Montserrat Alternates', sans-serif;font-size:18px;line-height:1.25;margin:0;padding-left:32px;color:#111;overflow-wrap:break-word;hyphens:auto}
 .new-list li{margin:6px 0}
 
 .center-block{width:780px;height:440px;border-radius:30px;overflow:hidden;align-self:center}

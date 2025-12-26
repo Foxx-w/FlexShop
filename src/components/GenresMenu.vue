@@ -57,12 +57,12 @@ const inner = ref(null)
 function close(){ emits('update:visible', false); emits('close') }
 
 function positionMenu(){
-  // desired max menu height; will be clamped to available viewport space
+  // желаемая максимальная высота меню; будет ограничена доступным местом в окне
   const desiredMenuHeight = 500
   const viewportPad = 40
   
-  // determine menu width based on screen size
-  let menuWidth = 900  // wider for 2-column layout
+  // определяем ширину меню в зависимости от размера экрана
+  let menuWidth = 900  // шире для двухколонного макета
   if(window.innerWidth <= 761){
     menuWidth = Math.max(430, window.innerWidth - 40)
   } else if(window.innerWidth - viewportPad < menuWidth) {
@@ -74,14 +74,14 @@ function positionMenu(){
   const rect = anchor ? anchor.getBoundingClientRect() : { left: 0, width: window.innerWidth }
   const headerRect = headerEl ? headerEl.getBoundingClientRect() : rect
   const overlayTop = Math.round(headerRect.bottom + window.scrollY)
-  // compute available vertical space below header and clamp menu height
+  // вычисляем доступное вертикальное пространство под хедером и ограничиваем высоту меню
   const availableBelow = Math.max(window.innerHeight - overlayTop - viewportPad, 120)
   const finalMenuHeight = Math.min(desiredMenuHeight, availableBelow)
-  // place overlay exactly under header (no gap) and center menu horizontally
+  // размещаем overlay прямо под хедером (без зазора) и центрируем меню горизонтально
   overlayStyle.value = { position: 'absolute', left: 0, right: 0, top: overlayTop + 'px', pointerEvents: 'auto', zIndex: 1100, display: 'flex', justifyContent: 'center' }
   menuStyle.value = { position: 'relative', width: menuWidth + 'px', height: finalMenuHeight + 'px', top: '0px', zIndex: 1101 }
   
-  // reset scroll position to top to show first items without scrolling
+  // сбрасываем позицию прокрутки в начало, чтобы первые элементы были видны без скроллинга
   if(inner.value) {
     inner.value.scrollTop = 0
   }
@@ -115,19 +115,18 @@ onBeforeUnmount(()=>{
   .genres-list{width:100%}
 }
 
-/* custom thin scrollbar */
+/* тонкий кастомный скроллбар */
 .genres-inner::-webkit-scrollbar{width:8px;height:8px}
 .genres-inner::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.18);border-radius:8px}
 .genres-inner::-webkit-scrollbar-track{background:transparent}
 .genres-inner{scrollbar-width:thin;scrollbar-color:rgba(0,0,0,0.18) transparent}
 
-/* subtle gradient overlays to hint at more content */
+/* тонкие градиентные оверлеи, указывающие на наличие дополнительного контента */
 .genres-menu::before,.genres-menu::after{content:"";position:absolute;left:0;right:0;height:8px;pointer-events:none}
 .genres-menu::before{top:20px;background:linear-gradient(to bottom,#E2E2E2,rgba(226,226,226,0))}
 .genres-menu::after{bottom:0;background:linear-gradient(to top,#E2E2E2,rgba(226,226,226,0))}
 
-/* Responsive layout: single-column on small screens */
-
+/* Адаптивный макет: одна колонка на узких экранах */
 
 @media (max-width: 430px){
   .genres-menu{padding:8px 12px}

@@ -22,14 +22,11 @@ function handleKey(e){
 
 onMounted(()=>{
 	window.addEventListener('keydown', handleKey)
-	// expose global ref for console debugging
 	try{ window.__showGuestMenuRef = showGuestMenu }catch(e){}
 })
 
 onBeforeUnmount(()=> window.removeEventListener('keydown', handleKey))
 
-// watch kept for future use (no logging)
-// keep silent watches for menu refs
 watch(showGuestMenu, ()=>{})
 watch(showUserMenu, ()=>{})
 watch(showGenresMenu, ()=>{})
