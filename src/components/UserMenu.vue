@@ -59,11 +59,11 @@ function positionMenu(){
     if(left + menuWidth > window.innerWidth) left = Math.round(window.innerWidth - menuWidth)
     if(left < 0) left = 0
     const headerRect = headerEl.getBoundingClientRect()
-    const overlayTop = Math.max(Math.round(headerRect.bottom), 0)
-    // keep overlay fixed to top and translate menu vertically for smooth visuals
-    // place overlay under header (header uses z-index:1000)
-    overlayStyle.value = { position: 'fixed', left: 0, right: 0, top: '0px', pointerEvents: 'auto', zIndex: 999 }
-    menuStyle.value = { position: 'absolute', width: menuWidth + 'px', height: menuHeight + 'px', top: '0px', left: Math.round(left) + 'px', transform: `translateY(${overlayTop}px)`, zIndex: 1101, willChange: 'transform' }
+    const overlayTop = Math.max(Math.round(headerRect.bottom + window.scrollY), 0)
+    // position overlay in document coordinates so it stays anchored under the header
+    // (use absolute + document offset instead of fixed + viewport offset)
+    overlayStyle.value = { position: 'absolute', left: 0, right: 0, top: overlayTop + 'px', pointerEvents: 'auto', zIndex: 1100 }
+    menuStyle.value = { position: 'absolute', width: menuWidth + 'px', height: menuHeight + 'px', top: '0px', left: Math.round(left) + 'px', zIndex: 1101, willChange: 'transform' }
     return
   }
   const anchor = document.querySelector('.site-header .header-inner .header-right') || document.querySelector('.site-header .header-inner')
@@ -77,11 +77,11 @@ function positionMenu(){
   const rect = anchor.getBoundingClientRect()
   const headerEl2 = document.querySelector('.site-header')
   const headerRect2 = headerEl2 ? headerEl2.getBoundingClientRect() : rect
-  const overlayTop = headerRect2.bottom
+  const overlayTop = Math.round(headerRect2.bottom + window.scrollY)
   let left = rect.left + (rect.width - menuWidth)/2
   if(left + menuWidth > window.innerWidth) left = window.innerWidth - menuWidth
   if(left < 0) left = 0
-  overlayStyle.value = { position: 'fixed', left: 0, right: 0, top: overlayTop + 'px', pointerEvents: 'auto', zIndex: 1100 }
+  overlayStyle.value = { position: 'absolute', left: 0, right: 0, top: overlayTop + 'px', pointerEvents: 'auto', zIndex: 1100 }
   menuStyle.value = { position: 'absolute', width: menuWidth + 'px', height: menuHeight + 'px', top: '0px', left: left + 'px', zIndex: 1101 }
 }
 
@@ -91,28 +91,20 @@ watch(()=>props.visible, async (v)=>{
     positionMenu()
     ignoreClicksUntil.value = Date.now() + 200
     window.addEventListener('resize', positionMenu)
-    window.addEventListener('scroll', onScroll, { passive: true })
   } else {
     window.removeEventListener('resize', positionMenu)
-    window.removeEventListener('scroll', onScroll)
     overlayStyle.value = {}
     menuStyle.value = {}
   }
 })
 
-function onScroll(){
-  if(_raf) return
-  _raf = requestAnimationFrame(()=>{
-    positionMenu()
-    _raf = null
-  })
-}
+// scroll repositioning disabled to keep menu static while open
 </script>
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600&display=swap');
 .guest-menu-overlay{position:fixed;left:0;right:0;display:block;pointer-events:auto}
-.guest-menu{position:absolute;top:0;width:400px;height:240px;background:rgba(34,34,34,0.95);border-top-left-radius:0;border-top-right-radius:0;border-bottom-left-radius:30px;border-bottom-right-radius:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;box-sizing:border-box;padding:20px;font-family:'Montserrat Alternates',sans-serif;z-index:900;transform-origin:top center;animation:menuEnter .22s cubic-bezier(.2,.9,.2,1) both}
+.guest-menu{position:absolute;top:0;width:400px;height:240px;background:rgba(34,34,34,0.95);border-top-left-radius:0;border-top-right-radius:0;border-bottom-left-radius:30px;border-bottom-right-radius:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;box-sizing:border-box;padding:20px;font-family:'Montserrat Alternates',sans-serif;z-index:900;transform-origin:top center}
 .menu-button{width:360px;height:50px;background-color:rgba(39,39,39,0.95);border-radius:30px;border:none;display:flex;align-items:center;justify-content:center;gap:12px;padding:0 12px;box-sizing:border-box;color:#FFFFFF;font-family:'Montserrat Alternates',sans-serif;font-size:18px;text-decoration:none;position:relative;padding-left:72px;transition:transform .12s ease,box-shadow .12s ease,background-color .12s ease}
 .menu-button.router-link-active{outline: none}
 .menu-button:hover{transform:translateY(-3px)}

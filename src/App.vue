@@ -2,6 +2,7 @@
 	<AppRouter />
 	<GuestMenu v-model:visible="showGuestMenu" />
 	<UserMenu v-model:visible="showUserMenu" />
+	<GenresMenu v-model:visible="showGenresMenu" />
 	<ScrollTop />
 </template>
 
@@ -11,8 +12,9 @@ import AppRouter from './AppRouter.vue'
 import ScrollTop from './components/ScrollTop.vue'
 import GuestMenu from './components/GuestMenu.vue'
 import UserMenu from './components/UserMenu.vue'
+import GenresMenu from './components/GenresMenu.vue'
 import { showGuestMenu } from './stores/ui'
-import { showUserMenu } from './stores/ui'
+import { showUserMenu, showGenresMenu } from './stores/ui'
 
 function handleKey(e){
 	if(e.key === 'm') showGuestMenu.value = !showGuestMenu.value
@@ -30,6 +32,7 @@ onBeforeUnmount(()=> window.removeEventListener('keydown', handleKey))
 // keep silent watches for menu refs
 watch(showGuestMenu, ()=>{})
 watch(showUserMenu, ()=>{})
+watch(showGenresMenu, ()=>{})
 </script>
 
 
