@@ -43,6 +43,12 @@
         </div>
         <button class="pf-btn" aria-label="Готово">Готово</button>
       </div>
+
+      <div class="products-grid">
+        <!-- Карточки товаров будут здесь -->
+      </div>
+
+      
     </main>
 
     <Footer />
@@ -112,7 +118,12 @@ body{font-family:Inter, system-ui, Arial, sans-serif;background:#F5F5F5}
 
 @media (max-width:580px){
 .price-filter{max-width:90%;height:80px}
+
 .pf-label{white-space: nowrap}
 }
+
+.products-grid{max-width:1920px;width:100%;margin-top:40px;padding:0 64px;box-sizing:border-box;display:flex;flex-wrap:wrap;gap:20px;justify-content:flex-start}
+
+.product-details-temp{display:flex;justify-content:center;margin-top:40px;margin-bottom:40px;padding:0 20px;box-sizing:border-box}
 
 </style>

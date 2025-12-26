@@ -16,9 +16,6 @@ import GenresMenu from './components/GenresMenu.vue'
 import { showGuestMenu } from './stores/ui'
 import { showUserMenu, showGenresMenu } from './stores/ui'
 
-function handleKey(e){
-	if(e.key === 'm') showGuestMenu.value = !showGuestMenu.value
-}
 
 onMounted(()=>{
 	window.addEventListener('keydown', handleKey)
