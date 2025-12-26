@@ -30,7 +30,7 @@
 import { ref } from 'vue'
 import SiteHeader from '../components/Header.vue'
 import Footer from '../components/Footer.vue'
-import SellerProductEditor from '../components/SellerProductEditor.vue'
+import SellerProductEditor from '../components/SellerProductEdit.vue'
 
 const showAddModal = ref(false)
 const newProduct = ref({ title: '', description: '', price: 0, image: '', cardImage: '' })

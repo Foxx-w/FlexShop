@@ -110,11 +110,19 @@
       </div>
 
       <div class="products-grid">
-        <!-- Загружаем карточки товаров -->
+        <!-- Карточки товаров -->
         <ProductCard 
           v-for="product in paginatedProducts" 
           :key="product.id"
-          :product="product"
+          :product="{
+            id: product.id,
+            title: product.name,
+            price: product.price,
+            imageUrl: product.image,
+            count: product.count || 10
+          }"
+          @open-details="openProductModal"
+          @add-to-cart="handleAddToCart"
         />
         
         <div v-if="displayedProducts.length === 0 && filterApplied" class="no-results">
@@ -163,6 +171,16 @@
         </div>
       </div>
       
+      <!-- Модальное окно деталей товара -->
+      <ProductDetails
+        v-if="selectedProductId"
+        :game-id="selectedProductId"
+        :is-visible="!!selectedProductId"
+        @close="closeProductModal"
+        @add-to-cart="handleAddToCartFromModal"
+        @buy-now="handleBuyNow"
+      />
+      
     </main>
 
     <Footer />
@@ -170,19 +188,24 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import SiteHeader from '../components/Header.vue'
 import Footer from '../components/Footer.vue'
 import ProductCard from '../components/ProductCard.vue'
+import ProductDetails from '../components/ProductDetails.vue'
+
 
 // Реактивные данные для фильтров
 const minPriceInput = ref('')
 const maxPriceInput = ref('')
-const minPrice = ref(null) // Фактическое значение фильтра
-const maxPrice = ref(null) // Фактическое значение фильтра
+const minPrice = ref(null)
+const maxPrice = ref(null)
 const isLoading = ref(false)
 const isSuccess = ref(false)
 const filterApplied = ref(false)
+
+// Модальное окно
+const selectedProductId = ref(null)
 
 // Пагинация
 const currentPage = ref(1)
@@ -194,127 +217,248 @@ const products = ref([
     id: 1,
     name: 'The Witcher 3: Wild Hunt',
     price: 1499,
-    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/292030/capsule_616x353.jpg'
+    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/292030/capsule_616x353.jpg',
+    description: 'Эпическая RPG игра от CD Projekt Red',
+    count: 10,
+    developerTitle: 'CD Projekt Red',
+    publisherTitle: 'CD Projekt',
+    genres: ['RPG', 'Action', 'Open World'],
+    createdAt: '2023-01-01T00:00:00'
   },
   {
     id: 2,
     name: 'Cyberpunk 2077',
     price: 1999,
-    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1091500/capsule_616x353.jpg'
+    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1091500/capsule_616x353.jpg',
+    description: 'Научно-фантастическая RPG в мире будущего',
+    count: 8,
+    developerTitle: 'CD Projekt Red',
+    publisherTitle: 'CD Projekt',
+    genres: ['RPG', 'Action', 'Sci-Fi'],
+    createdAt: '2023-02-01T00:00:00'
   },
   {
     id: 3,
     name: 'Elden Ring',
     price: 2499,
-    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1245620/capsule_616x353.jpg'
+    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1245620/capsule_616x353.jpg',
+    description: 'Эпическая action-RPG от создателей Dark Souls',
+    count: 5,
+    developerTitle: 'FromSoftware',
+    publisherTitle: 'Bandai Namco',
+    genres: ['RPG', 'Action', 'Fantasy'],
+    createdAt: '2023-03-01T00:00:00'
   },
   {
     id: 4,
     name: 'Red Dead Redemption 2',
     price: 1799,
-    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1174180/capsule_616x353.jpg'
+    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1174180/capsule_616x353.jpg',
+    description: 'Приключенческий вестерн от Rockstar Games',
+    count: 12,
+    developerTitle: 'Rockstar Games',
+    publisherTitle: 'Rockstar Games',
+    genres: ['Action', 'Adventure', 'Western'],
+    createdAt: '2023-04-01T00:00:00'
   },
   {
     id: 5,
     name: 'Baldur\'s Gate 3',
     price: 2999,
-    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1086940/capsule_616x353.jpg'
+    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1086940/capsule_616x353.jpg',
+    description: 'Эпическая RPG на базе Dungeons & Dragons',
+    count: 3,
+    developerTitle: 'Larian Studios',
+    publisherTitle: 'Larian Studios',
+    genres: ['RPG', 'Adventure', 'Strategy'],
+    createdAt: '2023-05-01T00:00:00'
   },
   {
     id: 6,
     name: 'Counter-Strike 2',
     price: 0,
-    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/730/capsule_616x353.jpg'
+    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/730/capsule_616x353.jpg',
+    description: 'Командный шутер от первого лица',
+    count: 999,
+    developerTitle: 'Valve',
+    publisherTitle: 'Valve',
+    genres: ['FPS', 'Action', 'Multiplayer'],
+    createdAt: '2023-06-01T00:00:00'
   },
   {
     id: 7,
     name: 'Dota 2',
     price: 0,
-    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/570/capsule_616x353.jpg'
+    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/570/capsule_616x353.jpg',
+    description: 'MOBA игра от Valve',
+    count: 999,
+    developerTitle: 'Valve',
+    publisherTitle: 'Valve',
+    genres: ['MOBA', 'Strategy', 'Multiplayer'],
+    createdAt: '2023-07-01T00:00:00'
   },
   {
     id: 8,
     name: 'Apex Legends',
     price: 0,
-    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1172470/capsule_616x353.jpg'
+    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1172470/capsule_616x353.jpg',
+    description: 'Бесплатный королевский бой от Respawn',
+    count: 999,
+    developerTitle: 'Respawn Entertainment',
+    publisherTitle: 'Electronic Arts',
+    genres: ['Battle Royale', 'FPS', 'Action'],
+    createdAt: '2023-08-01T00:00:00'
   },
   {
     id: 9,
     name: 'Grand Theft Auto V',
     price: 899,
-    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/271590/capsule_616x353.jpg'
+    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/271590/capsule_616x353.jpg',
+    description: 'Культовая игра в жанре action-adventure',
+    count: 20,
+    developerTitle: 'Rockstar North',
+    publisherTitle: 'Rockstar Games',
+    genres: ['Action', 'Adventure', 'Open World'],
+    createdAt: '2023-09-01T00:00:00'
   },
   {
     id: 10,
     name: 'The Sims 4',
     price: 0,
-    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1222670/capsule_616x353.jpg'
+    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1222670/capsule_616x353.jpg',
+    description: 'Симулятор жизни от Maxis',
+    count: 999,
+    developerTitle: 'Maxis',
+    publisherTitle: 'Electronic Arts',
+    genres: ['Simulation', 'Life', 'Sandbox'],
+    createdAt: '2023-10-01T00:00:00'
   },
   {
     id: 11,
     name: 'Call of Duty: Modern Warfare III',
     price: 3499,
-    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1938090/capsule_616x353.jpg'
+    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1938090/capsule_616x353.jpg',
+    description: 'Шутер от первого лица от Activision',
+    count: 7,
+    developerTitle: 'Sledgehammer Games',
+    publisherTitle: 'Activision',
+    genres: ['FPS', 'Action', 'War'],
+    createdAt: '2023-11-01T00:00:00'
   },
   {
     id: 12,
     name: 'Starfield',
     price: 2799,
-    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1716740/capsule_616x353.jpg'
+    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1716740/capsule_616x353.jpg',
+    description: 'Научно-фантастическая RPG от Bethesda',
+    count: 9,
+    developerTitle: 'Bethesda Game Studios',
+    publisherTitle: 'Bethesda Softworks',
+    genres: ['RPG', 'Action', 'Sci-Fi'],
+    createdAt: '2023-12-01T00:00:00'
   },
   {
     id: 13,
     name: 'Forza Horizon 5',
     price: 2199,
-    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1551360/capsule_616x353.jpg'
+    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1551360/capsule_616x353.jpg',
+    description: 'Аркадный гоночный симулятор',
+    count: 15,
+    developerTitle: 'Playground Games',
+    publisherTitle: 'Xbox Game Studios',
+    genres: ['Racing', 'Simulation', 'Open World'],
+    createdAt: '2024-01-01T00:00:00'
   },
   {
     id: 14,
     name: 'Hogwarts Legacy',
     price: 2599,
-    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/990080/capsule_616x353.jpg'
+    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/990080/capsule_616x353.jpg',
+    description: 'Игра по вселенной Гарри Поттера',
+    count: 6,
+    developerTitle: 'Avalanche Software',
+    publisherTitle: 'Warner Bros. Games',
+    genres: ['Action', 'RPG', 'Adventure'],
+    createdAt: '2024-02-01T00:00:00'
   },
   {
     id: 15,
     name: 'Marvel\'s Spider-Man Remastered',
     price: 2399,
-    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1817070/capsule_616x353.jpg'
+    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1817070/capsule_616x353.jpg',
+    description: 'Экшен-игра о Человеке-пауке',
+    count: 11,
+    developerTitle: 'Insomniac Games',
+    publisherTitle: 'PlayStation PC LLC',
+    genres: ['Action', 'Adventure', 'Superhero'],
+    createdAt: '2024-03-01T00:00:00'
   },
   {
     id: 16,
     name: 'God of War',
     price: 2299,
-    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1593500/capsule_616x353.jpg'
+    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1593500/capsule_616x353.jpg',
+    description: 'Эпическая action-adventure игра',
+    count: 8,
+    developerTitle: 'Santa Monica Studio',
+    publisherTitle: 'PlayStation PC LLC',
+    genres: ['Action', 'Adventure', 'Mythology'],
+    createdAt: '2024-04-01T00:00:00'
   },
   {
     id: 17,
     name: 'Resident Evil 4',
     price: 2499,
-    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/2050650/capsule_616x353.jpg'
+    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/2050650/capsule_616x353.jpg',
+    description: 'Хоррор выживания от Capcom',
+    count: 4,
+    developerTitle: 'Capcom',
+    publisherTitle: 'Capcom',
+    genres: ['Horror', 'Action', 'Survival'],
+    createdAt: '2024-05-01T00:00:00'
   },
   {
     id: 18,
     name: 'Dead Space',
     price: 2099,
-    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1693980/capsule_616x353.jpg'
+    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1693980/capsule_616x353.jpg',
+    description: 'Ремейк культового хоррора',
+    count: 7,
+    developerTitle: 'Motive Studio',
+    publisherTitle: 'Electronic Arts',
+    genres: ['Horror', 'Action', 'Sci-Fi'],
+    createdAt: '2024-06-01T00:00:00'
   },
   {
     id: 19,
     name: 'Sea of Thieves',
     price: 899,
-    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1172620/capsule_616x353.jpg'
+    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1172620/capsule_616x353.jpg',
+    description: 'Пиратская приключенческая игра',
+    count: 999,
+    developerTitle: 'Rare',
+    publisherTitle: 'Xbox Game Studios',
+    genres: ['Adventure', 'Action', 'Multiplayer'],
+    createdAt: '2024-07-01T00:00:00'
   },
   {
     id: 20,
     name: 'Fallout 4',
     price: 999,
-    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/377160/capsule_616x353.jpg'
+    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/377160/capsule_616x353.jpg',
+    description: 'Постапокалиптическая RPG',
+    count: 14,
+    developerTitle: 'Bethesda Game Studios',
+    publisherTitle: 'Bethesda Softworks',
+    genres: ['RPG', 'Action', 'Open World'],
+    createdAt: '2024-08-01T00:00:00'
   }
 ])
 
 // Форматирование цены
 const formatPrice = (price) => {
-  return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+  if (!price && price !== 0) return '0'
+  return new Intl.NumberFormat('ru-RU').format(price)
 }
 
 // Валидация ввода
@@ -322,7 +466,6 @@ const validateInput = (event, type) => {
   const input = event.target
   let value = input.value.replace(/[^0-9]/g, '')
   
-  // Ограничение максимальной длины
   if (value.length > 7) {
     value = value.slice(0, 7)
   }
@@ -343,7 +486,6 @@ const handleInputBlur = (type) => {
     if (value < 0) minPriceInput.value = '0'
     if (value > 9999999) minPriceInput.value = '9999999'
     
-    // Автоматическая коррекция если min > max
     if (maxPriceInput.value && value > parseInt(maxPriceInput.value)) {
       maxPriceInput.value = minPriceInput.value
     }
@@ -354,7 +496,6 @@ const handleInputBlur = (type) => {
     if (value < 0) maxPriceInput.value = '0'
     if (value > 9999999) maxPriceInput.value = '9999999'
     
-    // Автоматическая коррекция если max < min
     if (minPriceInput.value && value < parseInt(minPriceInput.value)) {
       minPriceInput.value = maxPriceInput.value
     }
@@ -367,18 +508,16 @@ const applyFilter = async () => {
   
   isLoading.value = true
   
-  // Устанавливаем значения фильтра
   minPrice.value = minPriceInput.value ? parseInt(minPriceInput.value) : null
   maxPrice.value = maxPriceInput.value ? parseInt(maxPriceInput.value) : null
   
-  // Проверка на корректность
   if (minPrice.value !== null && maxPrice.value !== null && minPrice.value > maxPrice.value) {
     maxPrice.value = minPrice.value
     maxPriceInput.value = minPriceInput.value
   }
   
   filterApplied.value = true
-  currentPage.value = 1 // Сбрасываем на первую страницу
+  currentPage.value = 1
   
   // Имитация загрузки данных
   await new Promise(resolve => setTimeout(resolve, 600))
@@ -386,7 +525,6 @@ const applyFilter = async () => {
   isLoading.value = false
   isSuccess.value = true
   
-  // Сброс успешного состояния через 2 секунды
   setTimeout(() => {
     isSuccess.value = false
   }, 2000)
@@ -402,6 +540,62 @@ const resetFilter = () => {
   currentPage.value = 1
 }
 
+// Открытие модалки
+const openProductModal = (productId) => {
+  selectedProductId.value = productId
+  document.body.style.overflow = 'hidden'
+}
+
+// Закрытие модалки
+const closeProductModal = () => {
+  selectedProductId.value = null
+  document.body.style.overflow = ''
+}
+
+// Обработка добавления в корзину из модалки
+const handleAddToCartFromModal = (productId) => {
+  console.log('Товар добавлен в корзину из модалки:', productId)
+  const product = products.value.find(p => p.id === productId)
+  if (product && product.count > 0) {
+    product.count -= 1
+  }
+  alert('Товар добавлен в корзину!')
+}
+
+// Обработка добавления в корзину из карточки
+const handleAddToCart = (productId) => {
+  console.log('Товар добавлен в корзину из карточки:', productId)
+  const product = products.value.find(p => p.id === productId)
+  if (product && product.count > 0) {
+    product.count -= 1
+  }
+}
+
+// Обработка покупки
+const handleBuyNow = (order) => {
+  console.log('Заказ создан:', order)
+  alert('Заказ успешно оформлен!')
+  closeProductModal()
+}
+
+// Закрытие по Escape
+const handleEscape = (e) => {
+  if (e.key === 'Escape' && selectedProductId.value) {
+    closeProductModal()
+  }
+}
+
+// При монтировании
+onMounted(() => {
+  document.addEventListener('keydown', handleEscape)
+})
+
+// При размонтировании
+onUnmounted(() => {
+  document.removeEventListener('keydown', handleEscape)
+  document.body.style.overflow = ''
+})
+
 // Отфильтрованные товары
 const displayedProducts = computed(() => {
   if (!filterApplied.value) {
@@ -411,15 +605,11 @@ const displayedProducts = computed(() => {
   return products.value.filter(product => {
     const price = product.price
     
-    // Если не указаны границы - показываем все
     if (minPrice.value === null && maxPrice.value === null) {
       return true
     }
     
-    // Проверка минимальной цены
     const minValid = minPrice.value === null || price >= minPrice.value
-    
-    // Проверка максимальной цены
     const maxValid = maxPrice.value === null || price <= maxPrice.value
     
     return minValid && maxValid
@@ -522,30 +712,124 @@ const resetButton = (event) => {
 }
 </script>
 
-
-
-<style>
+<style> 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600&display=swap');
-html,body,#app{height:100%;margin:0}
-body{font-family:Inter, system-ui, Arial, sans-serif;background:#F5F5F5}
-.app-root{min-height:100vh;display:flex;flex-direction:column;align-items:center}
 
-.home-canvas{max-width:1920px;width:100%;min-height:calc(100vh - 164px);background:#F5F5F5}
+html, body, #app {
+  height: 100%;
+  margin: 0;
+}
 
-.three-blocks{display:flex;justify-content:center;align-items:center;gap:110px;margin-top:36px;padding:0 64px;box-sizing:border-box}
+body {
+  font-family: Inter, system-ui, Arial, sans-serif;
+  background: #F5F5F5;
+}
 
-.left-block{width:370px;height:400px;background:#EFEFEF;border-radius:30px;padding:22px;box-sizing:border-box}
-.left-title{font-family:'Montserrat Alternates', sans-serif;font-size:36px;margin:0 0 12px;color:#111;padding-left: 8px;}
-.new-list{font-family:'Montserrat Alternates', sans-serif;font-size:18px;line-height:1.25;margin:0;padding-left:32px;color:#111;overflow-wrap:break-word;hyphens:auto}
-.new-list li{margin:6px 0}
+.app-root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-.center-block{width:780px;height:440px;border-radius:30px;overflow:hidden;align-self:center}
-.center-block img{width:100%;height:100%;object-fit:cover;display:block}
+.home-canvas {
+  max-width: 1920px;
+  width: 100%;
+  min-height: calc(100vh - 164px);
+  background: #F5F5F5;
+}
 
-.right-block{width:370px;height:400px;border-radius:30px;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;align-self:center}
-.right-block img{width:100%;height:100%;object-fit:cover;display:block}
-.promo-text{position:absolute;top:18px;left:50%;transform:translateX(-50%);z-index:2;font-family:'Montserrat Alternates', sans-serif;font-size:36px;color:#ffffff;text-align:center;pointer-events:none}
+/* ========== АДАПТИВ ДЛЯ БЛОКОВ ВВЕРХУ ========== */
+.three-blocks {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 110px;
+  margin-top: 36px;
+  padding: 0 64px;
+  box-sizing: border-box;
+}
 
+.left-block {
+  width: 370px;
+  height: 400px;
+  background: #EFEFEF;
+  border-radius: 30px;
+  padding: 22px;
+  box-sizing: border-box;
+}
+
+.left-title {
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 36px;
+  margin: 0 0 12px;
+  color: #111;
+  padding-left: 8px;
+}
+
+.new-list {
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 18px;
+  line-height: 1.25;
+  margin: 0;
+  padding-left: 32px;
+  color: #111;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.new-list li {
+  margin: 6px 0;
+}
+
+.center-block {
+  width: 780px;
+  height: 440px;
+  border-radius: 30px;
+  overflow: hidden;
+  align-self: center;
+}
+
+.center-block img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.right-block {
+  width: 370px;
+  height: 400px;
+  border-radius: 30px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+}
+
+.right-block img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.promo-text {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 36px;
+  color: #ffffff;
+  text-align: center;
+  pointer-events: none;
+}
+
+/* ========== АДАПТИВ ДЛЯ ФИЛЬТРА ЦЕНЫ ========== */
 .price-filter {
   width: 600px;
   max-width: 90%;
@@ -562,7 +846,12 @@ body{font-family:Inter, system-ui, Arial, sans-serif;background:#F5F5F5}
   font-size: 20px;
 }
 
-.pf-label{font-family:'Montserrat Alternates', sans-serif;font-size:20px;color:#A53DFF;margin-right:6px}
+.pf-label {
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 20px;
+  color: #A53DFF;
+  margin-right: 6px;
+}
 
 .pf-fields {
   display: flex;
@@ -636,48 +925,32 @@ body{font-family:Inter, system-ui, Arial, sans-serif;background:#F5F5F5}
   font-size: 14px;
 }
 
-.pf-input{
-  width:90px;
-  height:28px;
-  background:#F4F4F4;
-  border-radius:30px;
-  border:0;
-  padding:4px 8px;
-  font-size:20px;
-  font-family:'Montserrat Alternates', sans-serif;
-  box-sizing:border-box;
-  text-align:left
+.pf-input {
+  width: 90px;
+  height: 28px;
+  background: #F4F4F4;
+  border-radius: 30px;
+  border: 0;
+  padding: 4px 8px;
+  font-size: 20px;
+  font-family: 'Montserrat Alternates', sans-serif;
+  box-sizing: border-box;
+  text-align: left;
 }
 
 .pf-input[type="number"]::-webkit-outer-spin-button,
-.pf-input[type="number"]::-webkit-inner-spin-button{
+.pf-input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   appearance: none;
   margin: 0;
 }
 
-.pf-input[type="number"]{
+.pf-input[type="number"] {
   -moz-appearance: textfield;
   -webkit-appearance: none;
   appearance: none;
 }
 
-.pf-btn{
-  width:130px;
-  height:40px;
-  background:#222222;
-  color:#fff;
-  border-radius:30px;
-  border:0;
-  cursor:pointer;
-  font-size:20px;
-  font-family:'Montserrat Alternates', sans-serif;
-  box-shadow:0 6px 16px rgba(0,0,0,0.25);
-  align-self:center;
-  margin-left: 10px;
-}
-
-/* Анимации для кнопки фильтра */
 .pf-btn {
   width: 130px;
   height: 40px;
@@ -699,39 +972,33 @@ body{font-family:Inter, system-ui, Arial, sans-serif;background:#F5F5F5}
   justify-content: center;
 }
 
-/* Эффект наведения (когда не в состоянии загрузки/успеха) */
 .pf-btn:not(.btn-loading):not(.btn-success):hover {
   background: #A53DFF;
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(165, 61, 255, 0.3);
 }
 
-/* Эффект нажатия */
 .pf-btn:not(.btn-loading):not(.btn-success):active {
   transform: translateY(0);
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-/* Состояние загрузки */
 .pf-btn.btn-loading {
   background: #444;
   cursor: not-allowed;
 }
 
-/* Состояние успеха */
 .pf-btn.btn-success {
   background: #4CAF50;
   animation: successPulse 0.5s ease-in-out;
 }
 
-/* Анимация пульсации при успехе */
 @keyframes successPulse {
   0% { transform: scale(1); }
   50% { transform: scale(1.05); }
   100% { transform: scale(1); }
 }
 
-/* Лоадер (вращающийся круг) */
 .loader {
   width: 20px;
   height: 20px;
@@ -745,7 +1012,6 @@ body{font-family:Inter, system-ui, Arial, sans-serif;background:#F5F5F5}
   to { transform: rotate(360deg); }
 }
 
-/* Иконка успеха */
 .success-icon {
   font-size: 24px;
   animation: fadeIn 0.3s ease-out;
@@ -762,59 +1028,137 @@ body{font-family:Inter, system-ui, Arial, sans-serif;background:#F5F5F5}
   }
 }
 
-/* Эффект волны при клике */
-.pf-btn::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 5px;
-  height: 5px;
-  background: rgba(255, 255, 255, 0.5);
-  opacity: 0;
-  border-radius: 100%;
-  transform: scale(1, 1) translate(-50%);
-  transform-origin: 50% 50%;
+/* ========== АДАПТИВ ДЛЯ СЕТКИ ТОВАРОВ ========== */
+.products-grid {
+  max-width: 1600px;
+  width: 100%;
+  margin: 40px auto 0;
+  padding: 0 40px;
+  box-sizing: border-box;
+  
+  /* Grid разметка - максимум 5 карточек в строку */
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 30px;
+  justify-content: center;
+  justify-items: center;
 }
 
-.pf-btn:focus:not(:active)::after {
-  animation: ripple 1s ease-out;
-}
-
-@keyframes ripple {
-  0% {
-    transform: scale(0, 0);
-    opacity: 0.5;
-  }
-  100% {
-    transform: scale(40, 40);
-    opacity: 0;
+/* Адаптивные точки */
+@media (max-width: 1600px) {
+  .products-grid {
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
-/* Плавное появление/исчезновение текста */
-.pf-btn span {
-  transition: opacity 0.3s ease;
+@media (max-width: 1200px) {
+  .products-grid {
+    grid-template-columns: repeat(3, 1fr);
+    padding: 0 30px;
+  }
+  .left-block,
+  .right-block {
+    display: none !important;
+  }
 }
 
-/* Анимация для полей ввода при фокусе */
-.pf-input:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(165, 61, 255, 0.2);
-  animation: inputFocus 0.3s ease;
+@media (max-width: 992px) {
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 0 20px;
+  }
 }
 
-@keyframes inputFocus {
-  from { box-shadow: 0 0 0 0 rgba(165, 61, 255, 0); }
-  to { box-shadow: 0 0 0 2px rgba(165, 61, 255, 0.2); }
+@media (max-width: 576px) {
+  .products-grid {
+    grid-template-columns: 1fr;
+    padding: 0 15px;
+    gap: 20px;
+    max-width: 400px;
+  }
 }
 
-/* Плавное изменение цвета текста при вводе */
-.pf-input:valid {
+
+/* ========== АДАПТИВ ДЛЯ ПАГИНАЦИИ ========== */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 40px 0;
+  padding: 0 64px;
+  font-family: 'Montserrat Alternates', sans-serif;
+}
+
+.page-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  border: 2px solid #A53DFF;
+  background: white;
   color: #A53DFF;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
 }
 
-/* Анимация появления сообщения об отсутствии результатов */
+.page-btn:hover:not(:disabled) {
+  background: #A53DFF;
+  color: white;
+}
+
+.page-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.page-numbers {
+  display: flex;
+  gap: 8px;
+}
+
+.page-number {
+  min-width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  border: 2px solid #E2E2E2;
+  background: white;
+  color: #333;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.page-number:hover {
+  border-color: #A53DFF;
+}
+
+.page-number.active {
+  background: #A53DFF;
+  color: white;
+  border-color: #A53DFF;
+}
+
+.page-ellipsis {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  padding: 0 8px;
+}
+
+.page-info {
+  font-size: 14px;
+  color: #666;
+  margin-left: 16px;
+}
+
 .no-results {
   width: 100%;
   text-align: center;
@@ -837,329 +1181,222 @@ body{font-family:Inter, system-ui, Arial, sans-serif;background:#F5F5F5}
   }
 }
 
-/* Отключенное состояние кнопки */
-.pf-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
+/* ========== МЕДИА-ЗАПРОСЫ ДЛЯ АДАПТИВНОСТИ ========== */
 
-/* Обновленные стили для products-grid с центрированием */
-.products-grid{
-  max-width: 1920px;
-  width: 100%;
-  margin: 40px auto 0;
-  padding: 0 64px;
-  box-sizing: border-box;
-  display: grid;
-  grid-template-columns: repeat(5, minmax(200px, 240px));
-  gap: 20px;
-  justify-content: center;
-}
-
-/* Пагинация */
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 16px;
-  margin: 40px 0;
-  padding: 20px;
-  flex-wrap: wrap;
-}
-
-.page-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 2px solid #A53DFF;
-  background: white;
-  color: #A53DFF;
-  font-size: 18px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-}
-
-.page-btn:hover:not(:disabled) {
-  background: #A53DFF;
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(165, 61, 255, 0.3);
-}
-
-.page-btn:active:not(:disabled) {
-  transform: translateY(0);
-}
-
-.page-btn:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-  border-color: #ccc;
-  color: #ccc;
-}
-
-.page-numbers {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.page-number {
-  min-width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  border: 2px solid #E2E2E2;
-  background: white;
-  color: #333;
-  font-size: 16px;
-  font-family: 'Montserrat Alternates', sans-serif;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.page-number:hover:not(.active) {
-  border-color: #A53DFF;
-  color: #A53DFF;
-  transform: translateY(-2px);
-}
-
-.page-number.active {
-  background: #A53DFF;
-  color: white;
-  border-color: #A53DFF;
-  font-weight: 600;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(165, 61, 255, 0.3);
-}
-
-.page-ellipsis {
-  color: #666;
-  font-size: 18px;
-  padding: 0 4px;
-}
-
-.page-info {
-  font-family: 'Montserrat Alternates', sans-serif;
-  font-size: 16px;
-  color: #666;
-  margin-left: 16px;
-  white-space: nowrap;
-}
-
-/* Адаптивные стили для products-grid с центрированием */
-@media (max-width: 1600px) {
+/* Большие планшеты и маленькие десктопы (1200px - 1400px) */
+@media (max-width: 1400px) {
   .three-blocks {
-    gap: 40px;
-    padding: 0 16px;
+    gap: 60px;
+    padding: 0 40px;
   }
   
-  .left-block {
+  .left-block,
+  .right-block {
     width: 320px;
-    height: 340px;
+    height: 360px;
+  }
+  
+  .center-block {
+    width: 650px;
+    height: 380px;
+  }
+  
+  .left-title {
+    font-size: 32px;
   }
   
   .new-list {
-    width: 320px;
-    height: 340px;
     font-size: 16px;
   }
   
-  .center-block {
-    width: 600px;
-    height: 340px;
-  }
-  
-  .right-block {
-    width: 320px;
-    height: 340px;
+  .promo-text {
+    font-size: 32px;
   }
   
   .products-grid {
-    grid-template-columns: repeat(4, minmax(200px, 240px));
     padding: 0 40px;
-    gap: 25px;
+    gap: 30px;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   }
 }
 
-@media (max-width: 1400px) {
-  .products-grid {
-    grid-template-columns: repeat(4, minmax(180px, 220px));
-    padding: 0 40px;
-    gap: 25px;
-  }
-}
-
+/* Планшеты (768px - 1200px) */
 @media (max-width: 1200px) {
   .three-blocks {
-    gap: 40px;
-    padding: 0 16px;
+    flex-direction: column;
+    gap: 30px;
+    padding: 0 30px;
   }
   
-  .left-block, .right-block {
-    display: none;
+  .left-block,
+  .center-block,
+  .right-block {
+    width: 100%;
+    max-width: 780px;
+  }
+  
+  .left-block,
+  .right-block {
+    height: 200px;
   }
   
   .center-block {
-    width: 90%;
-    height: auto;
-    border-radius: 30px;
+    height: 300px;
   }
   
-  .right-block {
-    width: 320px;
-    height: 340px;
+  .left-title {
+    font-size: 28px;
+    text-align: center;
   }
   
-  .products-grid {
-    grid-template-columns: repeat(3, minmax(180px, 220px));
-    padding: 0 30px;
-    gap: 20px;
-  }
-}
-
-@media (max-width: 1000px) {
-  .products-grid {
-    grid-template-columns: repeat(2, minmax(200px, 250px));
-    gap: 20px;
-    padding: 0 40px;
-  }
-}
-
-@media (max-width: 900px) {
-  .products-grid {
-    grid-template-columns: repeat(2, minmax(180px, 220px));
-    gap: 20px;
-    padding: 0 30px;
-  }
-}
-
-@media (max-width: 768px) {
-  .price-filter {
-    width: 90%;
-    height: auto;
-    padding: 15px;
-    flex-direction: column;
-    gap: 15px;
-  }
-  
-  .pf-fields {
-    width: 100%;
-    justify-content: center;
+  .new-list {
+    display: flex;
     flex-wrap: wrap;
+    gap: 10px;
+    padding-left: 20px;
   }
   
-  .filter-info {
-    margin: 15px 10px 0;
+  .new-list li {
+    width: calc(50% - 10px);
+    margin: 3px 0;
+  }
+  
+  .promo-text {
+    font-size: 28px;
+  }
+  
+  .price-filter {
+    width: 500px;
     padding: 10px 15px;
-    font-size: 14px;
-    flex-direction: column;
-    gap: 5px;
-  }
-  
-  .products-grid {
-    grid-template-columns: repeat(2, minmax(150px, 200px));
-    padding: 0 20px;
-    gap: 15px;
-    margin-top: 30px;
-  }
-  
-  .pagination {
-    flex-direction: column;
-    gap: 16px;
-    margin: 30px 0;
-  }
-  
-  .page-info {
-    margin-left: 0;
-  }
-  
-  .no-results {
-    padding: 40px;
-    font-size: 20px;
-  }
-}
-
-@media (max-width: 650px) {
-  .products-grid {
-    grid-template-columns: minmax(250px, 300px);
-    justify-content: center;
-    padding: 0 20px;
-  }
-  
-  .page-numbers {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-}
-
-@media (max-width: 580px) {
-  .price-filter {
-    max-width: 90%;
-    height: 80px;
   }
   
   .pf-label {
-    white-space: nowrap;
-  }
-  
-  .pf-btn {
-    width: 100px;
     font-size: 18px;
-  }
-  
-  .loader {
-    width: 16px;
-    height: 16px;
-  }
-  
-  .success-icon {
-    font-size: 20px;
-  }
-  
-  .pf-fields {
-    gap: 8px;
-  }
-  
-  .pf-field {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-  }
-  
-  .pf-label {
-    font-size: 16px;
   }
   
   .pf-input {
     width: 80px;
-    font-size: 16px;
-  }
-  
-  .reset-filter-btn {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-}
-
-@media (max-width: 480px) {
-  .products-grid {
-    grid-template-columns: minmax(250px, 1fr);
-    padding: 0 15px;
-    gap: 15px;
-    margin-top: 25px;
-  }
-  
-  .no-results {
-    padding: 30px;
     font-size: 18px;
   }
   
+  .pf-btn {
+    width: 110px;
+    height: 36px;
+    font-size: 18px;
+  }
+  
+  .products-grid {
+    padding: 0 30px;
+    gap: 25px;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+  
   .pagination {
+    padding: 0 30px;
+    gap: 12px;
+  }
+  
+  .page-btn,
+  .page-number {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+  
+  .page-info {
+    font-size: 13px;
+  }
+}
+
+/* Маленькие планшеты и большие телефоны (576px - 768px) */
+@media (max-width: 768px) {
+  .home-canvas {
+    min-height: calc(100vh - 140px);
+  }
+  
+  .three-blocks {
+    margin-top: 20px;
+    padding: 0 20px;
+    gap: 20px;
+  }
+  
+  .left-block,
+  .right-block {
+    height: 180px;
+    padding: 15px;
+  }
+  
+  .center-block {
+    height: 250px;
+  }
+  
+  .left-title {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+  
+  .new-list {
+    font-size: 14px;
+    padding-left: 15px;
+  }
+  
+  .promo-text {
+    font-size: 24px;
+    top: 12px;
+  }
+  
+  .price-filter {
+    width: 90%;
+    height: 50px;
+    padding: 8px 12px;
+    margin-top: 25px;
+  }
+  
+  .pf-fields {
     gap: 8px;
+  }
+  
+  .pf-label {
+    font-size: 16px;
+    margin-right: 4px;
+  }
+  
+  .pf-input {
+    width: 70px;
+    height: 24px;
+    font-size: 16px;
+    padding: 2px 6px;
+  }
+  
+  .pf-btn {
+    width: 100px;
+    height: 32px;
+    font-size: 16px;
+    margin-left: 8px;
+  }
+  
+  .filter-info {
+    padding: 10px 15px;
+    font-size: 14px;
+    max-width: 90%;
+  }
+  
+  .filter-count {
+    font-size: 12px;
+  }
+  
+  .products-grid {
+    padding: 0 20px;
+    margin-top: 30px;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+  
+  .pagination {
+    flex-wrap: wrap;
+    padding: 0 20px;
+    margin: 30px 0;
+    gap: 10px;
   }
   
   .page-btn,
@@ -1169,23 +1406,172 @@ body{font-family:Inter, system-ui, Arial, sans-serif;background:#F5F5F5}
     font-size: 14px;
   }
   
-  .page-info {
-    font-size: 14px;
+  .page-numbers {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    margin-top: 10px;
   }
   
-  .products-grid > * {
-    justify-self: center;
-    width: 100%;
-    max-width: 300px;
+  .page-info {
+    order: 2;
+    margin-left: 0;
+    font-size: 12px;
+  }
+  
+  .no-results {
+    padding: 30px 20px;
+    font-size: 16px;
   }
 }
 
-.product-details-temp {
-  display: flex;
-  justify-content: center;
-  margin-top: 40px;
-  margin-bottom: 40px;
-  padding: 0 20px;
-  box-sizing: border-box;
+/* Телефоны (до 576px) */
+@media (max-width: 576px) {
+  .three-blocks {
+    padding: 0 15px;
+  }
+  
+  .left-block,
+  .right-block {
+    height: 160px;
+    padding: 12px;
+  }
+  
+  .center-block {
+    height: 200px;
+  }
+  
+  .left-title {
+    font-size: 20px;
+  }
+  
+  .new-list {
+    font-size: 12px;
+    padding-left: 10px;
+  }
+  
+  .new-list li {
+    width: 100%;
+  }
+  
+  .promo-text {
+    font-size: 20px;
+    top: 10px;
+  }
+  
+  .price-filter {
+    flex-direction: column;
+    height: auto;
+    padding: 15px;
+    gap: 12px;
+    border-radius: 20px;
+  }
+  
+  .pf-fields {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .pf-btn {
+    width: 100%;
+    margin-left: 0;
+  }
+  
+  .products-grid {
+    padding: 0 15px;
+    gap: 15px;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+  
+  .pagination {
+    padding: 0 15px;
+  }
+  
+  .page-btn,
+  .page-number {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+  }
+  
+  .page-numbers {
+    gap: 5px;
+  }
+  
+  .no-results {
+    padding: 20px 15px;
+    font-size: 14px;
+  }
+  
+  .filter-info {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+  
+  .filter-count {
+    font-size: 11px;
+  }
+}
+
+/* Очень маленькие телефоны (до 400px) */
+@media (max-width: 400px) {
+  .three-blocks {
+    padding: 0 10px;
+  }
+  
+  .left-block,
+  .right-block {
+    height: 140px;
+    padding: 10px;
+    border-radius: 20px;
+  }
+  
+  .center-block {
+    height: 180px;
+    border-radius: 20px;
+  }
+  
+  .left-title {
+    font-size: 18px;
+  }
+  
+  .new-list {
+    font-size: 11px;
+  }
+  
+  .promo-text {
+    font-size: 18px;
+  }
+  
+  .price-filter {
+    padding: 12px;
+    border-radius: 15px;
+  }
+  
+  .pf-input {
+    width: 60px;
+    font-size: 14px;
+  }
+  
+  .pf-label {
+    font-size: 14px;
+  }
+  
+  .products-grid {
+    padding: 0 10px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .pagination {
+    padding: 0 10px;
+  }
+  
+  .page-btn,
+  .page-number {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
 }
 </style>
