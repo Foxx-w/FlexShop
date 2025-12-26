@@ -77,7 +77,7 @@ body{font-family:Inter, system-ui, Arial, sans-serif;background:#F5F5F5}
 .price-filter{width:535px;max-width:90%;margin:35px auto 0;background:#E2E2E2;border-radius:30px;height:60px;padding:10px 18px;display:flex;align-items:center;justify-content:flex-start;gap:16px;box-sizing:border-box;font-size:20px}
 .pf-label{font-family:'Montserrat Alternates', sans-serif;font-size:20px;color:#A53DFF;margin-right:6px}
 .pf-fields{display:flex;align-items:center;gap:12px}
-.pf-input{width:90px;height:28px;background:#F4F4F4;border-radius:6px;border:0;padding:4px 8px;font-size:20px;font-family:'Montserrat Alternates', sans-serif;box-sizing:border-box;text-align:left}
+.pf-input{width:90px;height:28px;background:#F4F4F4;border-radius:30px;border:0;padding:4px 8px;font-size:20px;font-family:'Montserrat Alternates', sans-serif;box-sizing:border-box;text-align:left}
 
 .pf-input[type="number"]::-webkit-outer-spin-button,
 .pf-input[type="number"]::-webkit-inner-spin-button{
@@ -90,8 +90,7 @@ body{font-family:Inter, system-ui, Arial, sans-serif;background:#F5F5F5}
   -webkit-appearance: none;
   appearance: none;
 }
-.pf-btn{width:130px;height:40px;background:#222222;color:#fff;border-radius:30px;border:0;cursor:pointer;font-size:20px;font-family:'Montserrat Alternates', sans-serif;box-shadow:0 6px 16px rgba(0,0,0,0.25);align-self:center}
-
+.pf-btn{width:130px;height:40px;background:#222222;color:#fff;border-radius:30px;border:0;cursor:pointer;font-size:20px;font-family:'Montserrat Alternates', sans-serif;box-shadow:0 6px 16px rgba(0,0,0,0.25);align-self:center;margin-left: 10px;}
 
 @media (max-width:1600px){
   .three-blocks{gap:40px;padding:0 16px}

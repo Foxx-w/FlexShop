@@ -1,9 +1,11 @@
 <template>
   <RouterView />
+  <ScrollTop />
 </template>
 
 <script setup>
 import { RouterView } from 'vue-router'
+import ScrollTop from './components/ScrollTop.vue'
 </script>
 
 <style>

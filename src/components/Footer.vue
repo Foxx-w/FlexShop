@@ -39,7 +39,7 @@
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Jeju+Myeongjo&display=swap');
-.site-footer{margin-top:1045px;width:100%;background-color:#222222;height:100%;color:#fff}
+.site-footer{margin-top:auto;width:100%;background-color:#222222;height:auto;color:#fff}
 .footer-inner{display:flex;align-items:center;justify-content:space-between;padding:60px 150px;box-sizing:border-box}
 .footer-left{display:flex;flex-direction:column;gap:18px}
 .footer-logo-link{text-decoration:none;cursor:pointer;transition:opacity .18s ease}
@@ -62,7 +62,7 @@
   .footer-right{align-items:flex-start}
 }
 
-@media (max-width:450px){
+@media (max-width:536px){
   .footer-inner{padding:20px 20px}
   .footer-logo-text{font-size:64px}
 }
